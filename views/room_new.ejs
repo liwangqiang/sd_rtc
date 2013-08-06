@@ -1,0 +1,33 @@
+﻿<html>
+  <head>
+    <title>Example webrtc.io</title>
+    <link type="text/css" href="/stylesheets/style_new.css" rel="stylesheet"></link>
+	<%- include script %>
+  </head>
+  <body >
+	<form id = "register">
+		<label for='nickname' >what is you name :</label>
+		<input type = 'text' id = 'nickname' />
+		<p id = 'register_flash'></p>
+	</form>
+	
+    <div id="videos">
+      <video id="you" class="flip" autoplay width="263" height="200" style="position: absolute; left: 0px; bottom: 0px;"></video>
+    </div>
+	<div id='userlist'>
+		<div class = 'button'>房间人员列表：</div>
+		<div id = 'users'></div>
+	</div>
+    <div id="chatbox">
+		<div id="hideShowMessages" class="button">toggle chat</div>
+		<div id="messages"></div>
+        <input id="chatinput" type="text" placeholder="Message:"/>
+    </div>
+    <div class="buttonBox">
+      <div id="fullscreen" class="button">Enter Full Screen</div>
+      <div class="button" id ='outOfRoom'>out of room</div>
+    </div>
+	
+    <script src="/javascripts/script_new.js"></script>
+  </body>
+</html>
