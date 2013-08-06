@@ -182,6 +182,49 @@ function attachRTCEvents(webrtc) {
             });
         });
     });
+	
+	//用户建立连接的交互
+	webrtc.rtc.on('calling', function(data, socket, cb){
+		//根据昵称找到目标人,发送转发的消息
+        User.getOne(data.goal, function (user) {
+            if (user) {
+                user.sockets.emit('calling', {
+                    "from": data.from,
+					"goal": data.goal
+                });
+            }
+        });
+	
+	});
+	
+	webrtc.rtc.on('agree', function(data, socket, cb){
+		//根据昵称找到目标人,发送转发的消息
+        User.getOne(data.goal, function (user) {
+            if (user) {
+                user.sockets.emit('agree', {
+					"from": data.from,
+					"goal": data.goal
+                });
+            }
+        });
+	
+	});
+	
+	webrtc.rtc.on('decline', function(data, socket, cb){
+		//根据昵称找到目标人,发送转发的消息
+        User.getOne(data.goal, function (user) {
+            if (user) {
+                user.sockets.emit('decline', {
+                    "from": data.from,
+					"goal": data.goal
+                });
+            }
+        });
+	
+	});
+	
+	
+	//peerConnection
     webrtc.rtc.on('send_ice_candidate', function (data, socket, cb) {
  
         //根据昵称找到目标人,发送转发的消息

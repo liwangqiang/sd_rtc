@@ -408,6 +408,7 @@ var meetting = (function (io) {
 				return calls ;
 			};
 			
+			//caller
 			mediaCall.createCall = function(id, cb){
 			
 				var caller = (function(){
@@ -438,9 +439,9 @@ var meetting = (function (io) {
 				cb(caller);
 			};
 			
-			_socket.on('start', function(data){
+			_socket.on('agree', function(data){
 			
-				calls[data.from].fire('start');
+				calls[data.from].fire('agree');
 				calls[data.from].state = 'start';
 				
 			});
@@ -450,7 +451,8 @@ var meetting = (function (io) {
 				calls[data.from].fire('decline');
 				calls[data.from].state = 'decline';
 			});
-		
+			
+			//callee
 			_socket.on('calling', function(data){
 				var callee = {};
 				callee.user = data.from;
@@ -469,7 +471,7 @@ var meetting = (function (io) {
 				
 				callee.addStream = function(stream){
 					_socket.emit('event', {
-						'eventName': 'start',
+						'eventName': 'agree',
 						'data': {
 							'from': _me,
 							'goal': data.from
@@ -479,6 +481,7 @@ var meetting = (function (io) {
 					callee.state = 'start';
 					
 					var pc = callee.pc = new createPeerConnection(data.from);
+					pc.addStream(stream);
 				};
 				
 				calls[data.from] = callee;
