@@ -430,7 +430,7 @@ var meetting = (function (io) {
 					model.addStream = function(stream){
 						var pc = caller.pc = new createPeerConnection(id);
 						pc.addStream(stream);
-						sendOffer();
+						sendOffer(id);
 					};
 					return model;
 				});
@@ -497,18 +497,17 @@ var meetting = (function (io) {
 			
 			_socket.on('receive_offer', function(data){
 				
-				receiveOffer(data.socketId, data.sdp);
+				receiveOffer(data.from, data.sdp);
 			
 			});
 			
 			_socket.on('receive_answer', function(data){
 				
-				receiveAnswer(data.socketId, data.sdp);
+				receiveAnswer(data.from, data.sdp);
 			});
 			
 			_socket.on('remove_peer_connected', function(data){
-				
-				delete calls[data.socketId];
+				delete calls[data.from];
 			});
 			
 			
@@ -524,14 +523,15 @@ var meetting = (function (io) {
 						  "data": {
 							"label": event.candidate.sdpMLineIndex,
 							"candidate": event.candidate.candidate,
-							"socketId": id
+							"from": _me,
+							"goal": id
 						  }
 						});
 					  }
 					};
 
 					pc.onopen = function() {
-					
+						console.log('pc open!');
 					};
 
 					pc.onaddstream = function(event) {
@@ -568,7 +568,8 @@ var meetting = (function (io) {
 				  _socket.emit('event', {
 					"eventName": "send_offer",
 					"data": {
-					  "socketId": socketId,
+					  "from": _me,
+					  "goal": socketId,
 					  "sdp": session_description
 					}
 				  });
@@ -594,7 +595,8 @@ var meetting = (function (io) {
 				  _socket.emit('event', {
 					"eventName": "send_answer",
 					"data": {
-					  "socketId": socketId,
+					  "goal": socketId,
+					  "from": _me,
 					  "sdp": session_description
 					}
 				  });

@@ -91,11 +91,16 @@ function updataUserList(element, users){
 	}
 }
 function addUser(container, name){
-
+	
+	var btn = document.createElement('button');
+	btn.id = name ;
+	btn.innerHTML = name;
+	btn.className = 'button';
+	btn.onclick = videoChat;
+	container.appendChild(btn);
+	
 	var pre=document.createElement("p");
 	pre.style.wordWrap="break-word";
-	pre.id=name;
-	pre.innerHTML=name;
 	container.appendChild(pre);
 	
 }
@@ -119,4 +124,9 @@ function addToChat(msg, color) {
 }
 function sanitize(msg) {
   return msg.replace(/</g, '&lt;');
+}
+
+function videoChat(event){
+	var btn = event.target ;
+	alert(btn.id);
 }
