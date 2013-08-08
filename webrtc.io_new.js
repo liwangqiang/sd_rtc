@@ -233,7 +233,7 @@ function attachRTCEvents(webrtc) {
                 user.sockets.emit('receive_ice_candidate', {
                     "label": data.label,
                     "candidate": data.candidate,
-                    "form": data.from
+                    "from": data.from
                 });
             }
         });
@@ -260,7 +260,7 @@ function attachRTCEvents(webrtc) {
             if (user) {
                 user.sockets.emit('receive_answer', {
                     "sdp": data.sdp,
-                    "form": data.from
+                    "from": data.from
                 });
             }
  

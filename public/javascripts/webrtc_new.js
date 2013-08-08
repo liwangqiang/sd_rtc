@@ -410,7 +410,7 @@ var meetting = (function (io) {
 			
 			//caller
 			mediaCall.createCall = function(id, cb){
-			
+				cb = cb || function(){} ;
 				var caller = (function(){
 					var model = eventuality({});
 					model.user = id;
@@ -428,14 +428,15 @@ var meetting = (function (io) {
 					};
 					
 					model.addStream = function(stream){
-						var pc = caller.pc = new createPeerConnection(id);
+						var pc = new createPeerConnection(id);
+						caller.pc = pc ;
 						pc.addStream(stream);
 						sendOffer(id);
 					};
 					return model;
-				});
+				})();
 				
-				calls[data.from] = caller ;
+				calls[id] = caller ;
 				cb(caller);
 			};
 			
@@ -454,7 +455,7 @@ var meetting = (function (io) {
 			
 			//callee
 			_socket.on('calling', function(data){
-				var callee = {};
+				var callee = eventuality({});
 				callee.user = data.from;
 				callee.isCaller = false ;
 				
@@ -489,20 +490,20 @@ var meetting = (function (io) {
 			});
 			
 			_socket.on('receive_ice_candidate', function(data){
-			
+				console.log('receive ice_candidate from '+ data.from);
 				var candidate = new nativeRTCIceCandidate(data);
-				calls[data.socketId].pc.addIceCandidate(candidate);
+				calls[data.from].pc.addIceCandidate(candidate);
 				
 			});
 			
 			_socket.on('receive_offer', function(data){
-				
+				console.log('receive offer from '+ data.from);
 				receiveOffer(data.from, data.sdp);
 			
 			});
 			
 			_socket.on('receive_answer', function(data){
-				
+				console.log('receive answer from '+ data.from);
 				receiveAnswer(data.from, data.sdp);
 			});
 			
@@ -514,7 +515,7 @@ var meetting = (function (io) {
 			var createPeerConnection = function(id){
 				    var config = pc_constraints;
 
-					var pc = new PeerConnection(rtc.SERVER(), config);
+					var pc = new PeerConnection(SERVER(), config);
 					pc.onicecandidate = function(event) {
 					  if (event.candidate) {
 					  

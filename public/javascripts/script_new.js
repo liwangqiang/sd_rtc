@@ -3,6 +3,8 @@ var nickname = $('#nickname');
 var rtc = meetting.createClient({host:lib.host});
 var register_flash = $('#register_flash');
 var room_id = lib.getRoomId(location.pathname);
+var mediaCall = null;
+var myStream = null ;
 
 //注册
 register_user.submit(function (event) {
@@ -68,6 +70,28 @@ register_user.submit(function (event) {
 				}
 			});
 			
+			// 处理 来访的Call
+			mediaCall = rtc.getMediaCall();
+			mediaCall.on('call', function(callee){
+				alert('someone want to video you !');
+				if(!myStream){
+					meetting.createStream({"video":true, "audio":true}, function(stream){
+						myStream = stream ;
+						meetting.attachStream(stream, 'you');
+						callee.addStream(stream);
+					});
+				}else{
+					callee.addStream(myStream);
+				}
+				callee.on('ready', function(stream, id){
+					console.log("ADDING REMOTE STREAM...");
+					var clone = cloneVideo('you', id);
+					meetting.attachStream(stream, clone.id);
+				});
+				
+			});
+			
+			
 			
         } else {
             register_flash.html('<p>sorry - that nickname is already taken.</p>');
@@ -128,5 +152,44 @@ function sanitize(msg) {
 
 function videoChat(event){
 	var btn = event.target ;
-	alert(btn.id);
+	var id = btn.id;
+	if(mediaCall){
+		alert('you will call '+ id);
+		var caller = mediaCall.createCall(id, function(caller){
+			
+			caller.on('decline', function(){
+				alert(id + ' decline you !');
+			});
+			
+			caller.on('agree', function(){
+				if(!myStream){
+					meetting.createStream({"video":true, "audio":true}, function(stream){
+						meetting.attachStream(stream, 'you');
+						caller.addStream(stream);
+					});
+				
+				}else{
+					caller.addStream(myStream);
+				}
+				
+				caller.on('ready', function(stream, id){
+					console.log("ADDING REMOTE STREAM...");
+					var clone = cloneVideo('you', id);
+					meetting.attachStream(stream, clone.id);
+				});
+			});
+			caller.calling();
+		
+		});
+		
+		
+	};
+}
+
+function cloneVideo(domId, socketId) {
+  var video = document.getElementById(domId);
+  var clone = video.cloneNode(false);
+  clone.id = "remote" + socketId;
+  document.getElementById('videos').appendChild(clone);
+  return clone;
 }
