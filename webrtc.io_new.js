@@ -266,6 +266,20 @@ function attachRTCEvents(webrtc) {
  
         });
     });
+	
+	webrtc.rtc.on('close_call', function (data, socket, cb) {
+ 
+        //根据昵称找到目标人,发送转发的消息
+        User.getOne(data.goal, function (user) {
+            if (user) {
+                user.sockets.emit('close_call', {
+                    "from": data.from,
+					"goal": data.goal
+                });
+            }
+        });
+ 
+    });
  
     //文字消息
     webrtc.rtc.on('chat_msg', function (data, socket, cb) {

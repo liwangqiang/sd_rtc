@@ -61,19 +61,21 @@ register_user.submit(function (event) {
 						}
 
 					  });
+					  addToChat('点击列表中的人，开始通话');
+					  addToChat('双击vedio元素， 结束通话');
 					  rtc.on('room chat', function(data){
 						addToChat(data.from + ' : ' + data.message);
 					  });
 					
 				}else{
-					console.log('join error');
+					alert('join error');
 				}
 			});
 			
 			// 处理 来访的Call
 			mediaCall = rtc.getMediaCall();
 			mediaCall.on('call', function(callee){
-				alert('someone want to video you !');
+				alert(callee.user +' want to video you !');
 				if(!myStream){
 					meetting.createStream({"video":true, "audio":true}, function(stream){
 						myStream = stream ;
@@ -87,6 +89,10 @@ register_user.submit(function (event) {
 					console.log("ADDING REMOTE STREAM...");
 					var clone = cloneVideo('you', id);
 					meetting.attachStream(stream, clone.id);
+				});
+				callee.on('end', function(id){
+					console.log('fire end event');
+					removeVideo(id);
 				});
 				
 			});
@@ -118,9 +124,14 @@ function addUser(container, name){
 	
 	var btn = document.createElement('button');
 	btn.id = name ;
-	btn.innerHTML = name;
 	btn.className = 'button';
 	btn.onclick = videoChat;
+	if(btn.id === rtc.me()){
+		btn.innerHTML = 'you : ' + name;
+		btn.disabled = true ;
+	}else{
+		btn.innerHTML = name;
+	}
 	container.appendChild(btn);
 	
 	var pre=document.createElement("p");
@@ -150,6 +161,7 @@ function sanitize(msg) {
   return msg.replace(/</g, '&lt;');
 }
 
+
 function videoChat(event){
 	var btn = event.target ;
 	var id = btn.id;
@@ -177,6 +189,11 @@ function videoChat(event){
 					var clone = cloneVideo('you', id);
 					meetting.attachStream(stream, clone.id);
 				});
+				caller.on('end', function(id){
+				
+					console.log('fire end event');
+					removeVideo(id);
+				});
 			});
 			caller.calling();
 		
@@ -186,10 +203,23 @@ function videoChat(event){
 	};
 }
 
+
 function cloneVideo(domId, socketId) {
   var video = document.getElementById(domId);
   var clone = video.cloneNode(false);
   clone.id = "remote" + socketId;
   document.getElementById('videos').appendChild(clone);
+  clone.ondblclick = function(){
+	var calls = mediaCall.getCalls();
+	calls[socketId].end();
+  };
   return clone;
-}
+};
+
+
+function removeVideo(socketId) {
+  var video = document.getElementById('remote' + socketId);
+  if(video) {
+    video.parentNode.removeChild(video);
+  }
+};

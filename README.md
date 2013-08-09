@@ -57,6 +57,8 @@ Note: 依赖 socket.io-client v0.9.16
 
 #### .register(name, cb)
 
+#### .getMediaCall()
+
 #### .me()
 
 #### .findRooms(query, cb)
@@ -91,8 +93,23 @@ Note: 依赖 socket.io-client v0.9.16
 
 
 
-### call
-待补
+### mediaCall
+
+#### .getCalls()
+
+#### .createCall()
+
+#### Event
+'call' 		
+
+
+
+### caller
+
+
+
+### callee
+
 
 
 

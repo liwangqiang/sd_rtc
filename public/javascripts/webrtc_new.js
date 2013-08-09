@@ -416,6 +416,26 @@ var meetting = (function (io) {
 					model.user = id;
 					model.isCaller = true ;
 					
+					model.end = function(){
+						_socket.emit('event', {
+							'eventName': 'close_call',
+							'data': {
+								'from': _me,
+								'goal': id
+							}
+							
+						});
+						caller.fire('end', id);
+					};
+					
+					model.on('end', function(){
+						console.log('fire end event');
+						if(model.pc){
+							model.pc.close();
+							delete calls[id];
+						}
+					});
+					
 					model.calling = function(){
 						
 						_socket.emit('event',{
@@ -429,7 +449,7 @@ var meetting = (function (io) {
 					
 					model.addStream = function(stream){
 						var pc = new createPeerConnection(id);
-						caller.pc = pc ;
+						model.pc = pc ;
 						pc.addStream(stream);
 						sendOffer(id);
 					};
@@ -470,6 +490,26 @@ var meetting = (function (io) {
 					callee.state = 'decline';
 				};
 				
+				callee.end = function(){
+					_socket.emit('event', {
+						'eventName': 'close_call',
+						'data': {
+							'from': _me,
+							'goal': data.from
+						}
+					});
+					callee.fire('end', data.from);
+				};
+				
+				callee.on('end', function(id){
+					console.log('end event fire');
+					if(callee.pc){
+						callee.pc.close();
+						delete calls[data.from];
+					}
+					
+				});
+				
 				callee.addStream = function(stream){
 					_socket.emit('event', {
 						'eventName': 'agree',
@@ -507,8 +547,18 @@ var meetting = (function (io) {
 				receiveAnswer(data.from, data.sdp);
 			});
 			
-			_socket.on('remove_peer_connected', function(data){
-				delete calls[data.from];
+			
+			_socket.on('close_call', function(data){
+				if(calls[data.from] && calls[data.from].state === 'open'){
+					calls[data.from].fire('end', data.from);
+				}
+			});
+			
+			_socket.on('remove_user', function(data){
+				if(calls[data.user] && calls[data.user].state === 'open'){
+					calls[data.user].fire('end', data.user);
+				}
+				
 			});
 			
 			
@@ -538,7 +588,10 @@ var meetting = (function (io) {
 					pc.onaddstream = function(event) {
 					  // TODO: Finalize this API
 					  calls[id].fire('ready', event.stream, id);
+					  calls[id].state = 'open';
 					};
+					
+					pc.on
 
 					return pc;
 			};
@@ -612,6 +665,7 @@ var meetting = (function (io) {
 		
 		//bug ！ 房间不能删除
         rtc.out = function () {
+			/*
 			if(current_room.id){
 				_socket.disconnect();
 				
@@ -619,16 +673,22 @@ var meetting = (function (io) {
 				_socket = null ;
 				_me = null ;
 				current_room = {};
+			*/
 				/*
 					因为register 之后 socket 才能连上服务器
 					所以out之后需要再调用 register 才能启用rtc 
 					不过本来就是单页面应用，大部分情况是一退出就跳转其他页面。
 				*/
+			/*	
 				iolog('out of room');
 				//释放视频资源
 			}else{
 				iolog('Error : 未加入任何房间 ！');
 			}
+			
+			*/
+			
+			window.location.reload();
         };
         rtc.chat = function () {
             if (_me && current_room.id) {
