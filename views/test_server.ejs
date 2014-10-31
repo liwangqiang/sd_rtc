@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src="/javascripts/socket.io.min.js"></script>
+	<script>
+		var iolog = function(msg){
+			console.log(msg);
+		};
+		
+		var iodir = function(json){
+			console.dir(json);
+		};
+		var socket = io.connect('http://localhost:1381');
+		socket.on('connect',function(){
+			iolog('connect success');
+			socket.emit('register',{name:'liwangqiang'},function(err){
+				if(!err){
+					iolog('register success');
+					socket.emit('event',{eventName:'get_all_users',data:{}},function(err,userList){
+						iodir(userList);
+					});
+					/*
+					socket.emit('event', {eventName:'join_room', data:{room:'a room'}},function(err,room){
+						if(err){
+							iolog(err);
+						}
+					});*/
+					socket.emit('event',{eventName:'create_room',data:{name:'a room',limit:3}},function(err,id){
+						if(err){
+							console.log(err);
+						} else {
+							iolog(id);
+							socket.emit('event',{eventName:'get_all_users',data:{room:id}},function(err,userList){
+								if(err){
+									iolog(err);
+								} else {
+									iodir(userList);
+								}
+							
+							});
+							socket.emit('event',{eventName:'get_all_rooms',data:{}},function(err,allRoomList){
+								if(err){
+									iolog(err);
+								} else {
+									iodir(allRoomList);
+								}
+							
+							});
+							socket.emit('event',{eventName:'join_room',data:{room:id}},function(err,room){
+								if(err){
+									iolog(err);
+								} else {
+									iodir(room);
+								}
+							
+							});
+							
+						}
+						
+					});
+					
+					
+				}
+			});
+		});
+	</script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+  </body>
+</html>

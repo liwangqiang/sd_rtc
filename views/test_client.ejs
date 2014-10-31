@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src='/javascripts/socket.io.min.js'></script>
+	<script src="/javascripts/webrtc_new.js"></script>
+	<script>
+		var iolog = function (msg) {
+			if (typeof msg === 'string') {
+				console.log(msg);
+			} else {
+				console.dir(msg);
+			}
+		};
+		var rtc = meetting.createClient();
+		
+		if(meetting.supported){
+			meetting.createStream({video:true, audio:true}, function(stream){
+				meetting.attachStream(stream, 'me');
+				rtc.register('1', function(worked){
+					if(worked){
+						iolog('register success')
+					}
+				});
+			});
+		}else{
+			alert('不支持rtc');
+		}
+	</script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+	<div id='videos'>
+	     <video id="me"  autoplay width="263" height="200" style="position: absolute; left: 0px; bottom: 0px;"></video>
+	</div>
+  </body>
+</html>

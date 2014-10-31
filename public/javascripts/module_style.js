@@ -1,0 +1,1 @@
+﻿/**	既可以被nodejs后台用，也可以被前台用的模块*///exports  是全局变量 传入立即执行函数的参数表，最后导出(function(exports) {	exports.*** = ***;	})((function() {	if(typeof exports === 'undefined') {		if( !window.*** ){			window.*** = {};			return window.***;		}else{			console.log('error: window.*** has already been used !');		}	} else {		return exports;	}})());

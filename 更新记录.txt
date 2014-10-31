@@ -1,0 +1,65 @@
+﻿'+'       新增功能
+'-'       去除bug
+'*'       改进方案
+'@bug'    发现的bug
+'@opt'    可优化方案
+
+
+
+[2013.6.7]  v0.1.0
+1、更新
+    + 提供第一批接口
+    + 接口文档
+    + demo
+
+2、方向
+    @bug 函数每执行一次，事件handler就注册一次。造成多次调用函数时不预料的错误 
+	@bug 退出房间bug + 房间函数不全
+    
+    @opt 模块模式 + 单例模式（惰性加载） 
+    @opt socket.io + 部件
+    @opt MVC框架 + 数据的持久化 + ejs
+    @opt nodejs 应用部署（故障恢复 + 日志文件 + 启动脚本）
+	@opt nodejs 升级 express3.0重写 
+
+	
+[2013.6.17]  v0.1.1
+1、更新
+	+ nodejs@0.10.x + express@3.x + MVC + ejs
+	+ 在线接口文档
+	
+2、方向	
+	@bug 函数每执行一次，事件handler就注册一次。造成多次调用函数时不预料的错误 (socket.io 可解决？)
+	@bug 退出房间bug + 房间函数不全
+    
+	
+    @opt 模块模式 + 单例模式（惰性加载） 
+	@opt 前后端是否可以共用一个model维护userMap 或者 roomMap （抛弃）
+    @opt socket.io + 部件
+    
+    
+	
+	
+	
+[2013.6.26]  v0.2.0
+1、更新
+	- 函数执行bug
+	* socket.io + 部件 
+	* 模块模式 + 单例模式 + 惰性加载
+	* 视频与文字实现分离
+	* 清晰的demo
+	* 清晰的文档
+	
+
+
+2、方向
+	@bug 创建房间没人进 则留存在房间列表中
+	
+	@opt 视频模块的设计与实现 参考 holla 
+	@opt 关于退出房间函数 out ，客户端的操作是关闭socket连接，并释放资源。
+	@opt nodejs 应用部署（故障恢复 + 日志文件 + 启动脚本）
+	@opt 数据持久化
+	@opt 解耦 models可能会传入参数 io
+	@opt https://apprtc.webrtc.org/ 是如何建立通信的
+	@opt adapter.js   interop between chrome and firefox
+	

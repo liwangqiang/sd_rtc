@@ -1,0 +1,177 @@
+﻿/**
+	@前台统一发过来room 表示 room.id
+	
+	@from 表示 发送方的昵称
+	
+	@goal 表示 发送目标的昵称
+
+	@事件统一采用 小写 + 下划线 命名
+
+	@on返回的回调，参数统一为 ( err, data)
+	
+	@按功能进行整理
+
+*/
+
+
+//register
+{
+	name: string
+
+	cb(err);
+}
+
+//event
+{
+	eventName: string,
+	data:{
+	
+	}
+}
+
+//disconnect
+{
+
+}
+
+//get_all_users
+{
+	eventName: get_all_users,
+	data:{
+		name: string || null
+	}
+	cb(err,userList || [])
+}
+
+//get_rooms
+{
+	eventName: get_rooms,
+	data{
+		from: 
+	
+	}
+	cb(err,roomList || [])
+}
+
+//create_room
+{
+	eventName: create_room,
+	data{
+		from: string
+		name: string,
+		limit: number
+	}
+	cb(err, roomId === string)
+}
+
+//join_room
+{
+	eventName: join_room,
+	data{
+		from: string 
+		room: string
+	}
+	cb(err, {
+				id: room.id,
+				name: room.name,
+				limit: limit,
+				userList: userList
+			});
+}
+
+//send_ice_candidate
+{
+	eventName: send_ice_candidate
+	data{
+		from: string,
+		goal: string,
+		label: 
+		candidate:
+	};
+}
+
+//receive_ice_candidate
+{
+	from: string,
+	label: 
+	candidate:
+}
+
+//send_offer
+{
+	eventName: send_offer
+	data{
+		from: string,
+		goal: string,
+		sdp: 
+	}
+}
+
+//receive_offer
+{
+	from: string
+	sdp:
+}
+
+//send_answer
+{
+	eventName: send_answer
+	data{
+		from: string,
+		goal: string,
+		sdp:
+	}
+}
+
+//receive_answer
+{
+	from: string
+	sdp:
+}
+
+//chat_msg
+{
+	eventName: chat_msg,
+	data{
+		from: string
+		room: string
+		message: string
+	}
+	
+	data{
+		from:
+		collection: []
+		message:
+	
+	}
+}
+
+//receive_chat
+{
+		from:
+		room: 
+		message: 
+};						
+
+//receive_personal_chat
+{
+		from:
+		message: 
+};
+
+
+//remove_user
+{
+	room:
+	user:
+}
+
+
+//new_user_connected
+{
+	room:
+	user:
+}
+
+
+
