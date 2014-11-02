@@ -6,6 +6,9 @@
 var Room = require('../models/room');
 
 module.exports = function(app){
+    app.get('/api',function(req, res){
+        res.render('api',{});   
+    });
 	app.get('/create', function(req, res) {
 		res.render('createRoom_new',{});
 	});
